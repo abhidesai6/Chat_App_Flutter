@@ -2,8 +2,10 @@ import 'package:chat_app/helper/helperFunctions.dart';
 import 'package:chat_app/services/auth.dart';
 import 'package:chat_app/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/widgets/widget.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'chatRoomScreen.dart';
 
@@ -18,6 +20,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool isLoggedIn = false;
   DatabaseMethods databaseMethods = new DatabaseMethods();
   AuthMethods authMethods = new AuthMethods();
   TextEditingController emailTextEditingController =
@@ -27,7 +30,14 @@ class _SignInState extends State<SignIn> {
 
   QuerySnapshot snapshotUserInfo;
 
-  signIn() {
+  @override
+  void initState() {
+    super.initState();
+    signIn1();
+    //signInWithGoogle();
+  }
+
+  signIn1() async {
     if (formKey.currentState.validate()) {
       HelperFunctions.getUserEmailInSharedPreference(
           emailTextEditingController.text);
@@ -42,7 +52,7 @@ class _SignInState extends State<SignIn> {
       });
 
       setState(() {
-        isLoading = true;
+        isLoading = true; 
       });
 
       authMethods
@@ -56,6 +66,18 @@ class _SignInState extends State<SignIn> {
         }
       });
     }
+  }
+
+  signInWithGoogle() {
+    authMethods.signInWithGoogle().then((value) {
+      HelperFunctions.saveUserLoggedInSharedPreference(true);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ChatRoom()));
+    });
+
+    setState(() {
+        isLoggedIn = true;
+      });
   }
 
   @override
@@ -117,7 +139,7 @@ class _SignInState extends State<SignIn> {
                 SizedBox(height: 16),
                 GestureDetector(
                   onTap: () {
-                    signIn();
+                    signIn1();
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -138,20 +160,25 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  decoration: BoxDecoration(
-                    gradient:
-                        LinearGradient(colors: [Colors.white, Colors.white]),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    "Sign In with Google",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
+                GestureDetector(
+                  onTap: () {
+                    signInWithGoogle();
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(colors: [Colors.white, Colors.white]),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(
+                      "Sign In with Google",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 17,
+                      ),
                     ),
                   ),
                 ),

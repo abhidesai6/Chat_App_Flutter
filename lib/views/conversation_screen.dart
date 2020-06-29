@@ -31,12 +31,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                         snapshot.data.documents[index].data["sendBy"],
                   );
                 })
-            : Container(
-                child: Text(
-                  "Hey",
-                  style: mediumTextFieldStyle(),
-                ),
-              );
+            : Container();
       },
     );
   }

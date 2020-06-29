@@ -1,6 +1,13 @@
+import 'package:chat_app/helper/constants.dart';
+import 'package:chat_app/helper/helperFunctions.dart';
+//import 'package:chat_app/modal/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseMethods {
+  getUserUid() async {
+    Constants.uid = await HelperFunctions.getUserUidSharedPreference();
+  }
+
   getUserByUsername(String username) async {
     return await Firestore.instance
         .collection("users")
@@ -22,6 +29,7 @@ class DatabaseMethods {
   }
 
   Future<void> createChatRoom(String chatRoomId, chatRoomMap) async {
+    getUserUid();
     Firestore.instance
         .collection("ChatRoom")
         .document(chatRoomId)
@@ -39,7 +47,7 @@ class DatabaseMethods {
         .add(messageMap);
   }
 
-   getConversationMessages(String chatRoomId) async {
+  getConversationMessages(String chatRoomId) async {
     return await Firestore.instance
         .collection("ChatRoom")
         .document(chatRoomId)
@@ -48,7 +56,7 @@ class DatabaseMethods {
         .snapshots();
   }
 
-   getChatRooms(String userName) async {
+  getChatRooms(String userName) async {
     return await Firestore.instance
         .collection("ChatRoom")
         .where("users", arrayContains: userName)

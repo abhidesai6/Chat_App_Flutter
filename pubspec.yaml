@@ -32,6 +32,12 @@ dependencies:
   firebase_auth: ^0.16.1
   cloud_firestore: ^0.13.7
   shared_preferences: ^0.5.7+3
+  google_sign_in: ^4.5.1
+  fluttertoast: ^4.0.1
+  flutter_auth_buttons: ^0.8.0
+
+  rxdart: ^0.24.1
+  observable : ^0.22.2
 
 dev_dependencies:
   flutter_test:

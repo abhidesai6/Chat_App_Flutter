@@ -18,6 +18,7 @@ DatabaseMethods databaseMethods = new DatabaseMethods();
 class _SignUpState extends State<SignUp> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
+   bool isLoggedIn = false;
   TextEditingController userNameTextEditingController =
       new TextEditingController();
   TextEditingController emailTextEditingController =
@@ -54,6 +55,18 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  signUpWithGoogle() {
+    authMethods.signInWithGoogle().then((value) {
+      HelperFunctions.saveUserLoggedInSharedPreference(true);
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => ChatRoom()));
+    });
+
+    setState(() {
+        isLoggedIn = true;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +94,7 @@ class _SignUpState extends State<SignUp> {
                               },
                               controller: userNameTextEditingController,
                               style: simpleTextFieldStyle(),
-                              decoration: textFieldInputDecoration("username"),
+                              decoration: textFieldInputDecoration("name"),
                             ),
                             SizedBox(height: 8),
                             TextFormField(
